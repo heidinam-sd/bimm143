@@ -2,7 +2,7 @@
 title: "Class 5: Data Visualization with ggplot"
 author: "Heidi Nam"
 date: 2023-04-19 
-format: pdf
+format: gfm
 editor: visual
 editor_options: 
   chunk_output_type: inline
