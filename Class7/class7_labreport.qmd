@@ -1,7 +1,7 @@
 ---
 title: "Class 07: Introduction to machine learning"
 author: "Heidi Nam"
-format: pdf
+format: gfm
 editor: visual
 ---
 
