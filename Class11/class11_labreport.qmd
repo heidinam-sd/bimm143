@@ -1,7 +1,7 @@
 ---
 title: "Class 11: Genome Informatics"
 author: "Heidi Nam"
-format: pdf
+format: gfm
 editor: visual
 ---
 
