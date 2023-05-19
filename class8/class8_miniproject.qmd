@@ -1,7 +1,7 @@
 ---
 title: "Class 08: Unsupervised Learning Mini-project"
 author: "Heidi Nam"
-format: pdf
+format: gfm
 editor: visual
 ---
 
