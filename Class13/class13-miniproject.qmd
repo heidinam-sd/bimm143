@@ -1,11 +1,11 @@
 ---
 title: "Class 13: RNA-Seq analysis mini-project"
 author: "Heidi Nam"
-format: pdf
+format: gfm
 editor: visual
 ---
 
-## Section 1. Differential Expression Analysis 
+## Section 1. Differential Expression Analysis
 
 loading library:
 
@@ -69,7 +69,7 @@ res = results(dds, contrast=c("condition", "hoxa1_kd", "control_sirna"))
 summary(res)
 ```
 
-### Volcano plot 
+### Volcano plot
 
 Making a plot of log2 fold change vs -log adjusted p-value:
 
@@ -136,7 +136,7 @@ res = res[order(res$pvalue),]
 write.csv(res, file="deseq_results.csv")
 ```
 
-## Section 2. Pathway Analysis 
+## Section 2. Pathway Analysis
 
 installing code for bioconductor packages:
 
@@ -272,6 +272,6 @@ print(paste("Total number of significant genes:", length(sig_genes)))
 write.table(sig_genes, file="significant_genes.txt", row.names=FALSE, col.names=FALSE, quote=FALSE)
 ```
 
-**Q8**: What pathway has the most significant \"Entities p-value\"? Do the most significant pathways listed match your previous KEGG results? What factors could cause differences between the two methods?
+**Q8**: What pathway has the most significant "Entities p-value"? Do the most significant pathways listed match your previous KEGG results? What factors could cause differences between the two methods?
 
 A: The most significant "Entities p-value" pathway was Cell Cycle, Mitotic. This was different from our KEGG results as the most significant pathway was Cell Cycle, however it was deemed as second highest from the Reactome analysis. This could be caused by the difference in databases as they are independent from each other, and it could also be caused by the different math methods to identify the p-value
