@@ -1,5 +1,5 @@
 # BIMM143 SP23 Coursework
-This is a store of my coursework for [BIMM143 SP23](https://marcos-diazg.github.io/BIMM143_SP23/) at UC San Diego.
+This is a store of my coursework for [BIMM143 SP23](https://marcos-diazg.github.io/BIMM143_SP23/) at UC San Diego. 
 
 ## Content
 - Class 05: [Data Visualization with ggplot](https://github.com/heidinam-sd/bimm143/blob/main/Class05/class05_labreport.qmd)
