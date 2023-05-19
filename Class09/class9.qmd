@@ -1,0 +1,195 @@
+---
+title: "Class 09: Structural Bioinformatics"
+author: "Heidi Nam"
+format: pdf
+editor: visual
+---
+
+## Introduction to the RCSB Protein Data Bank (PDB)
+
+Downloading and reading the PDB file:
+
+```{r}
+pdb <- read.csv("Data Export Summary.csv", row.names=1)
+```
+
+**Q1:** What percentage of structures in the PDB are solved by X-Ray and Electron Microscopy.
+
+-   using `gsub` to remove the commas + using `as.numeric` to change character into numbers
+
+-   using `sum` command to get the sum
+
+```{r}
+pdb_Total <- sum(as.numeric(gsub(",","",pdb$Total)))
+pdb_xray <- sum(as.numeric(gsub(",","",pdb$X.ray)))
+pdb_em <- sum(as.numeric(gsub(",","",pdb$EM)))
+
+(pdb_xray + pdb_em) / pdb_Total * 100
+```
+
+A: Around 93% of structures in the PDB are solved by X-ray and electron microscopy.
+
+**Q2:** What proportion of structures in the PDB are protein?
+
+```{r}
+pdb_protein <- sum(as.numeric(gsub(",","",pdb[1:3,"Total"])))
+pdb_protein / pdb_Total * 100
+```
+
+A: Around 97.8% of structures in the PDB are protein
+
+**Q3:** Type HIV in the PDB website search box on the home page and determine how many HIV-1 protease structures are in the current PDB?
+
+A: 45,184 HIV-1 protease structures are in the current PDB. (It is difficult to achieve the data!)
+
+## Visualizing the HIV-1 Protease structure
+
+Figure 1: Getting to know HIV-Pr
+
+![](1HSG.png)
+
+Figure 2: Delving Deeper - (D25) Asp 25 chains
+
+![](1HSG%20(1).png)
+
+**Q4**: Water molecules normally have 3 atoms. Why do we see just one atom per water molecule in this structure?
+
+-   We only see oxygen as hydrogen is very small; they do not have the resolution of hydrogen to be visualized in this model.
+
+**Q5**: There is a critical "conserved" water molecule in the binding site. Can you identify this water molecule? What residue number does this water molecule have.
+
+-   
+
+**Q6**: Generate and save a figure clearly showing the two distinct chains of HIV-protease along with the ligand. You might also consider showing the catalytic residues ASP 25 in each chain and the critical water (we recommend *"Ball & Stick"* for these side-chains). Add this figure to your Quarto document.
+
+![](q6.png)
+
+## Introduction to Bio3D in R
+
+```{r}
+library(bio3d)
+pdb <- read.pdb("1hsg")
+pdb
+```
+
+-   **Q7:** How many amino acid residues are there in this pdb object?
+
+There are 198 amino acid residues.
+
+-   **Q8:** Name one of the two non-protein residues?
+
+Water (HOH)
+
+-   **Q9:** How many protein chains are in this structure?
+
+There are 2 chains in this structure.
+
+Understanding attributes:
+
+```{r}
+attributes(pdb)
+head(pdb$atom)
+```
+
+## Predicting functional motions of a single structure
+
+Reading a different protein:
+
+```{r}
+adk <- read.pdb("6s36")
+```
+
+Performing normal mode analysis and plotting:
+
+```{r}
+m <- nma(adk)
+plot(m)
+```
+
+Creating movie trajectory:
+
+```{r}
+mktrj(m, file="adk_m7.pdb")
+```
+
+## Comparative structure analysis of Adenylate Kinase
+
+Installing packages needed:
+
+```{r}
+#install.packages("bio3d")
+#install.packages("devtools")
+#install.packages("BiocManager")
+#BiocManager::install("msa")
+#devtools::install_bitbucket("Grantlab/bio3d-view")
+```
+
+**Q10.** Which of the packages above is found only on BioConductor and not CRAN?
+
+-   msa
+
+**Q11.** Which of the above packages is not found on BioConductor or CRAN?:
+
+-   view
+
+**Q12.** True or False? Functions from the devtools package can be used to install packages from GitHub and BitBucket?
+
+-   True
+
+### Search and retrieve ADK structures
+
+```{r}
+library(bio3d)
+aa <- get.seq("1ake_A")
+aa
+```
+
+**Q13.** How many amino acids are in this sequence, i.e. how long is this sequence?
+
+-   it is 214 amino acids long.
+
+### BLAST searching
+
+```{r}
+# BLAST search
+b <- blast.pdb(aa)
+# Plot a summary of search results
+hits <- plot(b)
+# Download releated PDB files
+files <- get.pdb(hits$pdb.id, path="pdbs", split=TRUE, gzip=TRUE)
+# Align releated PDBs
+pdbs <- pdbaln(files, fit = TRUE, exefile="msa")
+# Vector containing PDB codes for figure axis
+ids <- basename.pdb(pdbs$id)
+
+# Draw schematic alignment
+plot(pdbs, labels=ids)
+```
+
+### Annotating collected PDB structures:
+
+```{r}
+anno <- pdb.annotate(ids)
+unique(anno$source)
+```
+
+### Principal component analysis
+
+```{r}
+# Perform PCA
+pc.xray <- pca(pdbs)
+plot(pc.xray)
+```
+
+Using function `rmsd()`, which uses clustering analysis based on pairwise standard deviation:
+
+```{r}
+# Calculate RMSD
+rd <- rmsd(pdbs)
+
+# Structure-based clustering
+hc.rd <- hclust(dist(rd))
+grps.rd <- cutree(hc.rd, k=3)
+
+plot(pc.xray, 1:2, col="grey50", bg=grps.rd, pch=21, cex=1)
+```
